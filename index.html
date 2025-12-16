@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מדריך פרויקט הערכה חלופית 30% - אמית כפר בתיה</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;600;700&family=Rubik:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Assistant', 'sans-serif'],
+                        heading: ['Rubik', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#2563EB',
+                        secondary: '#F59E0B',
+                        dark: '#0F172A',
+                        light: '#F8FAFC',
+                        excel: '#107c41'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { scroll-behavior: smooth; }
+        .checkbox-wrapper input:checked + div {
+            background-color: #10B981;
+            border-color: #10B981;
+            color: white;
+        }
+        .ai-btn { transition: all 0.2s; }
+        .ai-btn:hover { transform: translateY(-3px); }
+        
+        .tooltip-trigger:hover .tooltip-content {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .modal {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease-in-out;
+            z-index: 100;
+        }
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal-content {
+            transform: scale(0.95);
+            transition: all 0.3s ease-in-out;
+        }
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased relative">
+
+    <!-- ניווט עליון -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-50 shadow-sm">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+            <div class="flex flex-col">
+                <span class="font-heading font-bold text-lg text-primary">📊 מגמת מידע ונתונים</span>
+                <span class="text-[10px] text-slate-500 font-bold tracking-wide">מדעי טכנולוגי אמית כפר בתיה</span>
+            </div>
+            
+            <div class="flex gap-3 items-center">
+                <button onclick="openModal('aboutModal')" class="text-sm font-bold text-slate-600 hover:text-primary transition hidden md:block">אודות</button>
+                <button onclick="openModal('contactModal')" class="text-sm font-bold text-slate-600 hover:text-primary transition hidden md:block">עזרה</button>
+                <!-- קישור לאתר המגמה / מצגת כללית -->
+                <a href="https://docs.google.com/presentation/d/12fre2MJwBbnb3WC3vi1ZFGmeFm-cBlOk/edit?usp=sharing&ouid=118299283458609907764&rtpof=true&sd=true" target="_blank" class="text-xs font-bold text-primary border border-primary/30 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition flex items-center gap-1">
+                    <span>למצגת המגמה - הערכה חלופית</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- כותרת ראשית וציר זמן -->
+    <header class="bg-white pt-12 pb-8 px-4 text-center border-b border-slate-100">
+        <div class="max-w-4xl mx-auto">
+            <div class="inline-block bg-blue-50 text-primary px-4 py-1 rounded-full text-sm font-bold mb-4">חנוכה תשפ"ו 🕎</div>
+            
+            <h1 class="font-heading text-4xl md:text-5xl font-bold mb-6 text-dark leading-tight">פרויקט חקר בנתונים (30% בגרות)</h1>
+            <p class="text-xl text-slate-500 mb-8 font-light max-w-2xl mx-auto">
+                המטרה: למצוא נושא מעניין, לאתר נתונים ולהגיש הצעה ראשונית. <br>
+                סה"כ זמן עבודה נטו: כ-3 שעות.
+            </p>
+
+            <!-- ציר הזמן -->
+            <div class="flex flex-wrap justify-center gap-2 md:gap-4 mb-8 text-xs md:text-sm font-bold text-slate-500">
+                <div class="bg-slate-100 px-3 py-1 rounded-full">יום 1: בחירת נושא (30 דק')</div>
+                <div class="text-slate-300">⬅</div>
+                <div class="bg-slate-100 px-3 py-1 rounded-full">יום 3: חיפוש נתונים (45 דק')</div>
+                <div class="text-slate-300">⬅</div>
+                <div class="bg-slate-100 px-3 py-1 rounded-full">יום 7: בדיקה באקסל (30 דק')</div>
+                <div class="text-slate-300">⬅</div>
+                <div class="bg-green-100 text-green-700 px-3 py-1 rounded-full border border-green-200">יום 8: הגשת הצעה ✅</div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-4">
+                <a href="#excel-kit" class="bg-excel hover:bg-green-700 text-white px-8 py-3 rounded-xl font-bold shadow-lg shadow-green-500/30 transition transform hover:-translate-y-1 flex items-center justify-center gap-2">
+                    <span>📥</span> להורדת תבנית האקסל
+                </a>
+                <a href="#prompt-section" class="bg-white border border-slate-300 text-slate-700 px-8 py-3 rounded-xl font-bold hover:bg-slate-50 transition">
+                    עזרו לי למצוא רעיון 🤖
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- מדריך צעד אחר צעד -->
+    <section id="guide" class="max-w-5xl mx-auto px-4 py-16">
+        <h2 class="text-center font-heading text-3xl font-bold mb-12">📝 המדריך המלא: שלב אחר שלב</h2>
+        
+        <!-- שלב 1: מציאת נתונים -->
+        <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+            <div class="order-2 md:order-1">
+                <div class="bg-white p-2 rounded-xl shadow-xl border border-slate-100 rotate-1 hover:rotate-0 transition duration-500 group">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="Kaggle Data" class="rounded-lg w-full h-64 object-cover group-hover:scale-[1.02] transition">
+                </div>
+            </div>
+            <div class="order-1 md:order-2">
+                <div class="bg-blue-50 w-12 h-12 rounded-full flex items-center justify-center text-primary font-bold text-xl mb-4">1</div>
+                <h3 class="text-2xl font-bold mb-3">איפה מוצאים נתונים?</h3>
+                
+                <div class="space-y-4">
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                        <h4 class="font-bold text-primary flex items-center gap-2">
+                            <span class="text-xl">🏆</span> Kaggle (מומלץ!)
+                        </h4>
+                        <p class="text-sm text-slate-600 mt-1">האתר הכי טוב בעולם לנתונים. חובה להירשם (חינם) כדי להוריד. חפשו באנגלית (למשל "NBA Stats").</p>
+                    </div>
+
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                        <h4 class="font-bold text-primary flex items-center gap-2">
+                            <span class="text-xl">🔎</span> Google Dataset Search
+                        </h4>
+                        <p class="text-sm text-slate-600 mt-1">כמו גוגל, אבל מוצא רק טבלאות נתונים. כתבו נושא באנגלית והוסיפו "filetype:csv".</p>
+                    </div>
+
+                    <div class="bg-slate-50 p-3 rounded-lg border border-slate-100">
+                        <h4 class="font-bold text-primary flex items-center gap-2">
+                            <span class="text-xl">🇮🇱</span> Data.gov.il
+                        </h4>
+                        <p class="text-sm text-slate-600 mt-1">מאגר הנתונים הממשלתי. מעולה לנושאים על ישראל (תאונות דרכים, בגרויות, נדל"ן).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- שלב 2 -->
+        <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+            <div>
+                <div class="bg-blue-50 w-12 h-12 rounded-full flex items-center justify-center text-primary font-bold text-xl mb-4">2</div>
+                <h3 class="text-2xl font-bold mb-3">פתיחה באקסל ותיקון עברית</h3>
+                <p class="text-slate-600 leading-relaxed">
+                    פתחתם את הקובץ וראיתם ג'יבריש? אל דאגה:
+                    <ol class="list-decimal list-inside mt-2 space-y-1 text-slate-600">
+                        <li>פתחו אקסל ריק</li>
+                        <li>לכו ללשונית <strong>נתונים (Data)</strong></li>
+                        <li>בחרו <strong>ייבוא מטקסט/CSV</strong></li>
+                        <li>בחלונית שנפתחת, בחרו בקידוד <strong>UTF-8</strong></li>
+                    </ol>
+                </p>
+            </div>
+            <div>
+                <div class="bg-white p-2 rounded-xl shadow-xl border border-slate-100 -rotate-1 hover:rotate-0 transition duration-500 group">
+                    <img src="https://images.unsplash.com/photo-1543286386-2e659306cd6c?auto=format&fit=crop&w=800&q=80" alt="Excel Import" class="rounded-lg w-full h-64 object-cover group-hover:scale-[1.02] transition">
+                </div>
+            </div>
+        </div>
+
+        <!-- שלב 3 - בדיקת תקינות -->
+        <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+            <div class="order-2 md:order-1">
+                <div class="bg-slate-50 border-l-4 border-green-500 p-6 rounded-r-lg">
+                    <h4 class="font-bold text-lg mb-3">✅ צ'ק ליסט לבדיקה:</h4>
+                    <ul class="space-y-2 text-slate-700">
+                        <li class="flex items-center gap-2"><span>🟢</span> הקובץ נפתח תקין (רואים עמודות ושורות).</li>
+                        <li class="flex items-center gap-2"><span>🟢</span> יש כותרות ברורות באנגלית לכל עמודה.</li>
+                        <li class="flex items-center gap-2"><span>🟢</span> יש לפחות 300 שורות של נתונים.</li>
+                        <li class="flex items-center gap-2"><span>🟢</span> יש גם מספרים (כמותי) וגם טקסט (קטגורי).</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="order-1 md:order-2">
+                <div class="bg-blue-50 w-12 h-12 rounded-full flex items-center justify-center text-primary font-bold text-xl mb-4">3</div>
+                <h3 class="text-2xl font-bold mb-3">בדיקת תקינות הקובץ</h3>
+                <p class="text-slate-600 leading-relaxed">
+                    לפני שמתחילים לעבוד, חייבים לוודא שהנתונים "טובים". 
+                    עברו על הצ'ק ליסט משמאל. אם חסר משהו – עדיף לחפש קובץ אחר עכשיו מאשר להיתקע אחר כך.
+                </p>
+            </div>
+        </div>
+
+        <!-- שלב 4 - טיפים לניתוח -->
+        <div class="grid md:grid-cols-2 gap-12 items-center mb-16">
+            <div>
+                <div class="bg-purple-50 w-12 h-12 rounded-full flex items-center justify-center text-purple-600 font-bold text-xl mb-4">4</div>
+                <h3 class="text-2xl font-bold mb-3">טיפ של אלופים: איזה גרף לבחור?</h3>
+                <p class="text-slate-600 leading-relaxed mb-4">
+                    החלק הכי מבלבל הוא לבחור את סוג הגרף. הנה מדריך מהיר שיעזור לכם לבחור נכון לפי המשתנים שלכם:
+                </p>
+            </div>
+            <div class="grid grid-cols-1 gap-4">
+                <!-- כרטיסייה 1: פיזור -->
+                <div class="bg-white border border-slate-200 p-4 rounded-xl flex items-center gap-4 shadow-sm hover:shadow-md transition">
+                    <div class="text-3xl">📉</div>
+                    <div>
+                        <h4 class="font-bold text-slate-800">גרף פיזור (Scatter)</h4>
+                        <p class="text-xs text-slate-500">מתאים כשבודקים קשר בין <span class="font-bold text-primary">מספר</span> לבין <span class="font-bold text-primary">מספר</span>.</p>
+                        <p class="text-[10px] text-slate-400 mt-1">דוגמה: האם ככל שהגובה עולה (מספר), המשקל עולה (מספר)?</p>
+                    </div>
+                </div>
+                <!-- כרטיסייה 2: עמודות -->
+                <div class="bg-white border border-slate-200 p-4 rounded-xl flex items-center gap-4 shadow-sm hover:shadow-md transition">
+                    <div class="text-3xl">📊</div>
+                    <div>
+                        <h4 class="font-bold text-slate-800">גרף עמודות (Bar/Column)</h4>
+                        <p class="text-xs text-slate-500">מתאים להשוואה בין <span class="font-bold text-purple-600">קטגוריות</span> לפי <span class="font-bold text-primary">מספר</span>.</p>
+                        <p class="text-[10px] text-slate-400 mt-1">דוגמה: ממוצע שערים (מספר) בכל ליגה (קטגוריה).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- שלב 5 - טופס הגשה -->
+        <div class="grid md:grid-cols-2 gap-12 items-center">
+            <div>
+                <div class="bg-blue-50 w-12 h-12 rounded-full flex items-center justify-center text-primary font-bold text-xl mb-4">5</div>
+                <h3 class="text-2xl font-bold mb-3">הגשת הצעת המחקר</h3>
+                <p class="text-slate-600 leading-relaxed mb-4">
+                    זהו, יש לכם נושא ונתונים! עכשיו צריך למלא את טופס ההצעה.
+                    העתיקו את התבנית משמאל, מלאו אותה בקובץ Word, שמרו כ-PDF והגישו ב-Classroom יחד עם קובץ הנתונים שלכם.
+                </p>
+            </div>
+            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-lg relative">
+                <button onclick="copyToClipboard('submissionForm')" class="absolute top-4 left-4 text-xs bg-slate-100 hover:bg-slate-200 px-2 py-1 rounded border">העתק תבנית</button>
+                <div id="submissionForm" class="text-sm font-mono text-slate-600 whitespace-pre-line bg-slate-50 p-4 rounded mt-4">
+                    <strong>טופס הצעת מחקר - מגמת מידע ונתונים</strong>
+                    
+                    שם התלמיד: 
+                    נושא הפרויקט: 
+                    
+                    שאלת החקר (מה אני בודק?): 
+                    
+                    השערת החקר (מה אני חושב שתהיה התוצאה?):
+                    "אני משער ש..."
+                    
+                    מקור הנתונים (מאיפה הורדתי?): 
+                    קישור (URL): 
+                    
+                    פירוט משתנים (עמודות בטבלה):
+                    1. שם עמודה: ____ (הסבר: ______)
+                    2. שם עמודה: ____ (הסבר: ______)
+                    
+                    הצהרת תקינות:
+                    [ ] בדקתי שיש לפחות 300 שורות.
+                    [ ] בדקתי שהקובץ נפתח תקין באקסל.
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ערכת העבודה (התוספת של אקסל) + הסבר על משתנים -->
+    <section id="excel-kit" class="max-w-4xl mx-auto px-4 mb-20">
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden relative transform hover:-translate-y-1 transition duration-300">
+            <div class="absolute top-0 right-0 bottom-0 w-3 bg-excel"></div>
+            
+            <div class="p-8 pr-10">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-3xl">📝</span>
+                    <h2 class="font-heading text-2xl font-bold text-slate-800">ערכת העבודה לחנוכה: דבר לפני הכל</h2>
+                </div>
+                
+                <p class="text-slate-600 mb-6 text-lg leading-relaxed">
+                    המשימה כרגע היא לחפש נושא, שאלת מחקר אנליטית מתאימה ומסד נתונים, לפי הדרישות של פרויקט הערכה חלופית.<br>
+                    כדי שהפרויקט יראה מקצועי, הכנתי לכם קובץ אקסל שכבר מוכן לעבודה.
+                </p>
+
+                <!-- הסבר פשוט על משתנים + כפתור הרחבה לסולמות -->
+                <div class="bg-green-50 p-4 rounded-lg border border-green-100 mb-6">
+                    <div class="flex gap-3 items-start mb-3">
+                        <span class="text-2xl">💡</span>
+                        <div>
+                            <strong class="text-green-800 block mb-1">אל תיבהלו מהעמודה "סוג משתנה"!</strong>
+                            <p class="text-sm text-green-700">
+                                בקובץ האקסל תראו עמודה שנקראת "סוג משתנה". בדרך כלל מספיק לכתוב אם זה <strong>מספר</strong> או <strong>טקסט</strong>.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- כפתור להסבר על סולמות -->
+                    <button onclick="openModal('scalesModal')" class="mr-9 text-sm font-bold text-green-700 underline hover:text-green-900">
+                        ראיתם מושגים כמו "שמי", "סדר" או "מנה"? לחצו כאן להסבר (למתקדמים)
+                    </button>
+                </div>
+
+                <div class="bg-slate-50 p-6 rounded-xl border border-slate-200 mb-8">
+                    <p class="font-bold text-slate-700 mb-3 text-sm uppercase tracking-wide">👇 נסו בעצמכם: עברו עם העכבר על המילים המודגשות</p>
+                    <p class="text-xl text-slate-600 leading-relaxed">
+                        "המחקר יבדוק את הקשר בין 
+                        <!-- Tooltip 1 -->
+                        <span class="group relative inline-block cursor-help border-b-2 border-dashed border-excel text-excel font-bold mx-1 tooltip-trigger">
+                            שעות למידה
+                            <span class="tooltip-content invisible opacity-0 transition-all duration-300 absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-56 bg-slate-800 text-white text-sm font-normal p-3 rounded-lg text-center shadow-xl z-10 pointer-events-none">
+                                <span class="block font-bold text-green-400 mb-1">סוג: מספר (מנה)</span>
+                                (כמות שעות בשבוע)
+                                <svg class="absolute text-slate-800 h-2 w-full left-0 top-full" x="0px" y="0px" viewBox="0 0 255 255"><polygon class="fill-current" points="0,0 127.5,127.5 255,0"/></svg>
+                            </span>
+                        </span>
+                        לבין
+                        <!-- Tooltip 2 -->
+                        <span class="group relative inline-block cursor-help border-b-2 border-dashed border-excel text-excel font-bold mx-1 tooltip-trigger">
+                            הציון הסופי
+                            <span class="tooltip-content invisible opacity-0 transition-all duration-300 absolute bottom-full left-1/2 -translate-x-1/2 mb-3 w-56 bg-slate-800 text-white text-sm font-normal p-3 rounded-lg text-center shadow-xl z-10 pointer-events-none">
+                                <span class="block font-bold text-green-400 mb-1">סוג: מספר (מנה)</span>
+                                (ציון בין 0 ל-100)
+                                <svg class="absolute text-slate-800 h-2 w-full left-0 top-full" x="0px" y="0px" viewBox="0 0 255 255"><polygon class="fill-current" points="0,0 127.5,127.5 255,0"/></svg>
+                            </span>
+                        </span>."
+                    </p>
+                </div>
+
+                <a href="https://docs.google.com/spreadsheets/d/1Nx1i2RtnlqmKaVNADwpic8OntL3oEKat/edit?usp=sharing&ouid=118299283458609907764&rtpof=true&sd=true" class="block w-full bg-excel hover:bg-green-800 text-white text-center font-bold text-xl py-4 rounded-xl shadow-lg shadow-green-900/20 transition transform hover:scale-[1.01] flex items-center justify-center gap-3 group">
+                    <span class="group-hover:animate-bounce">📥</span>
+                    <span>להורדת קובץ התבנית (Excel Template)</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- אזור ה-AI -->
+    <section id="prompt-section" class="bg-slate-900 text-white py-16 relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-64 h-64 bg-blue-600 rounded-full blur-3xl opacity-20 -translate-y-1/2 translate-x-1/2"></div>
+
+        <div class="max-w-4xl mx-auto px-4 text-center relative z-10">
+            <h2 class="text-3xl font-heading font-bold mb-4">🤖 הכלי הסודי: פרומפט ל-AI</h2>
+            <p class="text-slate-400 mb-8">לא יודעים איך להתחיל? העתיקו את הטקסט, מלאו את הנושא שלכם, ותנו לבינה המלאכותית לעבוד.</p>
+            
+            <div class="bg-slate-800 rounded-xl p-6 text-right relative border border-slate-700 shadow-2xl max-w-2xl mx-auto mb-10">
+                <button onclick="copyPrompt()" class="copy-btn absolute top-4 left-4 bg-primary hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                    העתק
+                </button>
+                <code id="prompt-text" class="font-mono text-blue-200 text-lg leading-relaxed block">
+                    אני תלמיד כיתה י' במגמת מידע ונתונים. <br>
+                    אני רוצה לבדוק קשר מעניין בין שני דברים (למשל: האם ככל שהשכר גבוה יותר, הוותק גבוה יותר?).<br>
+                    הנושא שמעניין אותי הוא: [למשל: ליגת ה-NBA / מחירי דירות / ספוטיפיי].<br>
+                    1. הצע לי 3 רעיונות פשוטים לבדיקה.<br>
+                    2. הסבר אילו עמודות אני צריך לחפש בטבלה.<br>
+                    3. כתוב לי באנגלית מה לחפש בדיוק ב-Kaggle כדי למצוא קובץ מתאים.
+                </code>
+                <p id="copy-msg" class="text-green-400 text-sm mt-4 opacity-0 transition text-center absolute bottom-2 left-0 right-0">הועתק בהצלחה! עכשיו בחרו כלי למטה 👇</p>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-3xl mx-auto">
+                <a href="https://chatgpt.com/" target="_blank" class="ai-btn bg-white/10 hover:bg-[#10a37f] border border-white/20 p-4 rounded-xl flex flex-col items-center gap-2 group">
+                    <span class="text-2xl">🟢</span> <span class="font-bold text-sm">ChatGPT</span>
+                </a>
+                <a href="https://gemini.google.com/app" target="_blank" class="ai-btn bg-white/10 hover:bg-[#4E86F6] border border-white/20 p-4 rounded-xl flex flex-col items-center gap-2 group">
+                    <span class="text-2xl">🔵</span> <span class="font-bold text-sm">Gemini</span>
+                </a>
+                <a href="https://claude.ai/new" target="_blank" class="ai-btn bg-white/10 hover:bg-[#d97757] border border-white/20 p-4 rounded-xl flex flex-col items-center gap-2 group">
+                    <span class="text-2xl">🟠</span> <span class="font-bold text-sm">Claude</span>
+                </a>
+                <a href="https://www.perplexity.ai/" target="_blank" class="ai-btn bg-white/10 hover:bg-[#22bfa5] border border-white/20 p-4 rounded-xl flex flex-col items-center gap-2 group">
+                    <span class="text-2xl">🔍</span> <span class="font-bold text-sm">Perplexity</span>
+                </a>
+                <a href="https://julius.ai/" target="_blank" class="ai-btn bg-white/10 hover:bg-[#7c3aed] border border-white/20 p-4 rounded-xl flex flex-col items-center gap-2 group">
+                    <span class="text-2xl">📊</span> <span class="font-bold text-sm">Julius</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- פרויקטים לדוגמה -->
+    <section id="examples" class="py-16 bg-blue-50">
+        <div class="max-w-6xl mx-auto px-4">
+            <h2 class="text-center font-heading text-3xl font-bold mb-10 text-dark">💡 מה אפשר לחקור? דוגמאות מתלמידים</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- דוגמה 1 -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-bold text-lg">אלעד</h3>
+                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full font-bold">⚽ כדורגל</span>
+                    </div>
+                    <p class="text-slate-600 text-sm">"האם שחקנים גבוהים כובשים יותר גולים?"</p>
+                </div>
+
+                <!-- דוגמה 2 -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-bold text-lg">דני</h3>
+                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded-full font-bold">🎵 מוזיקה</span>
+                    </div>
+                    <p class="text-slate-600 text-sm">"האם שירים קצרים יותר מקבלים יותר השמעות?"</p>
+                </div>
+
+                <!-- דוגמה 3 -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-bold text-lg">יונתן</h3>
+                        <span class="bg-indigo-100 text-indigo-800 text-xs px-2 py-1 rounded-full font-bold">🎮 גיימינג</span>
+                    </div>
+                    <p class="text-slate-600 text-sm">"השוואת סיכויי זכייה במשחקים ארוכים מול קצרים."</p>
+                </div>
+
+                <!-- דוגמה 4 -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-bold text-lg">עידן</h3>
+                        <span class="bg-teal-100 text-teal-800 text-xs px-2 py-1 rounded-full font-bold">🌍 סביבה</span>
+                    </div>
+                    <p class="text-slate-600 text-sm">"איך השתנתה הטמפרטורה בערים גדולות ב-50 השנים האחרונות?"</p>
+                </div>
+
+                <!-- דוגמה 5 -->
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-slate-200">
+                    <div class="flex items-center justify-between mb-2">
+                        <h3 class="font-bold text-lg">עומר</h3>
+                        <span class="bg-red-100 text-red-800 text-xs px-2 py-1 rounded-full font-bold">📱 יוטיוב</span>
+                    </div>
+                    <p class="text-slate-600 text-sm">"האם יש קשר בין כמות הלייקים לכמות התגובות בסרטונים?"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- שאלות נפוצות -->
+    <section class="py-16 px-4 max-w-4xl mx-auto">
+        <h2 class="text-center font-heading text-3xl font-bold mb-10">❓ שאלות נפוצות</h2>
+        <div class="space-y-6">
+            <!-- FAQ Item 1 -->
+            <div class="bg-white border border-slate-200 rounded-lg p-5 shadow-sm flex items-start gap-4">
+                <div class="bg-blue-50 text-primary font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">1</div>
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-2">הקובץ נפתח בג'יבריש! מה עושים?</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">זה קורה הרבה. הפתרון: פתחו אקסל ריק -> לכו ללשונית "נתונים" -> "ייבוא מטקסט/CSV" -> בחלונית שנפתחת בחרו בקידוד <strong>UTF-8</strong>.</p>
+                </div>
+            </div>
+            
+            <!-- FAQ Item 2 -->
+            <div class="bg-white border border-slate-200 rounded-lg p-5 shadow-sm flex items-start gap-4">
+                <div class="bg-blue-50 text-primary font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">2</div>
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-2">לא מצליח להוריד מ-Kaggle</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">כדי להוריד קבצים חייבים להירשם לאתר (הרשמה חינם עם גוגל). בלי הרשמה הכפתור לא יעבוד.</p>
+                </div>
+            </div>
+
+            <!-- FAQ Item 3 -->
+            <div class="bg-white border border-slate-200 rounded-lg p-5 shadow-sm flex items-start gap-4">
+                <div class="bg-blue-50 text-primary font-bold rounded-full w-8 h-8 flex items-center justify-center flex-shrink-0 mt-1">3</div>
+                <div>
+                    <h3 class="font-bold text-slate-800 mb-2">מצאתי קובץ אבל הוא קטן (150 שורות)</h3>
+                    <p class="text-slate-600 text-sm leading-relaxed">אנחנו מחפשים לפחות 300 שורות כדי שהמחקר יהיה רציני. נסו לחפש שוב או היעזרו ב-AI כדי למצוא מקור אחר.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- סיכום הגשה -->
+    <section class="bg-blue-600 text-white py-12 px-4 text-center">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-2xl md:text-3xl font-heading font-bold mb-6">📦 אז מה מגישים בסוף החופש?</h2>
+            <div class="flex flex-col md:flex-row justify-center gap-6">
+                <div class="bg-white/10 backdrop-blur border border-white/20 p-6 rounded-xl flex-1">
+                    <div class="text-4xl mb-3">📊</div>
+                    <h3 class="font-bold text-xl mb-2">1. קובץ הנתונים</h3>
+                    <p class="text-blue-100 text-sm">קובץ Excel או CSV שהורדתם וסידרתם (לפחות 300 שורות).</p>
+                </div>
+                <div class="bg-white/10 backdrop-blur border border-white/20 p-6 rounded-xl flex-1">
+                    <div class="text-4xl mb-3">📄</div>
+                    <h3 class="font-bold text-xl mb-2">2. טופס הצעה (PDF)</h3>
+                    <p class="text-blue-100 text-sm">המסמך שמילאתם עם שאלת החקר, ההשערה והסבר על המשתנים.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- צ'ק ליסט הגשה -->
+    <section class="py-16 px-4 max-w-3xl mx-auto">
+        <div class="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
+            <div class="bg-slate-800 text-white p-6 flex justify-between items-center">
+                <h3 class="font-heading text-xl font-bold">✅ צ'ק ליסט סופי להגשה</h3>
+                <span id="progress-text" class="font-mono bg-slate-700 px-3 py-1 rounded text-sm">0%</span>
+            </div>
+            <div class="h-1 bg-slate-100 w-full">
+                <div id="progress-bar" class="h-full bg-green-500 w-0 transition-all duration-500"></div>
+            </div>
+            
+            <div class="p-6 space-y-4">
+                <label class="flex items-center cursor-pointer group checkbox-wrapper">
+                    <input type="checkbox" id="task1" class="hidden">
+                    <div class="w-6 h-6 border-2 border-slate-300 rounded flex items-center justify-center mr-4 transition group-hover:border-primary">✓</div>
+                    <span>הורדתי קובץ נתונים תקין (עם 300+ שורות)</span>
+                </label>
+                <label class="flex items-center cursor-pointer group checkbox-wrapper">
+                    <input type="checkbox" id="task2" class="hidden">
+                    <div class="w-6 h-6 border-2 border-slate-300 rounded flex items-center justify-center mr-4 transition group-hover:border-primary">✓</div>
+                    <span>מילאתי את טופס הצעת המחקר (התבנית משלב 4)</span>
+                </label>
+                <label class="flex items-center cursor-pointer group checkbox-wrapper">
+                    <input type="checkbox" id="task3" class="hidden">
+                    <div class="w-6 h-6 border-2 border-slate-300 rounded flex items-center justify-center mr-4 transition group-hover:border-primary">✓</div>
+                    <span>שמרתי את הטופס כ-PDF</span>
+                </label>
+                <label class="flex items-center cursor-pointer group checkbox-wrapper">
+                    <input type="checkbox" id="task4" class="hidden">
+                    <div class="w-6 h-6 border-2 border-slate-300 rounded flex items-center justify-center mr-4 transition group-hover:border-primary">✓</div>
+                    <span>הגשתי הכל ב-Classroom</span>
+                </label>
+            </div>
+        </div>
+    </section>
+
+    <!-- כפתור צור קשר צף -->
+    <div class="fixed bottom-6 left-6 z-40">
+        <button onclick="openModal('contactModal')" class="bg-primary hover:bg-blue-700 text-white rounded-full p-4 shadow-2xl transition transform hover:scale-110 flex items-center gap-2">
+            <span class="text-xl">💬</span>
+            <span class="font-bold hidden md:inline">צור קשר</span>
+        </button>
+    </div>
+
+    <footer class="bg-white border-t border-slate-200 py-8 text-center text-slate-500 text-sm">
+        <p>© יעל זיידמן | מגמת מידע ונתונים | מדעי טכנולוגי אמית כפר בתיה</p>
+    </footer>
+
+    <!-- MODALS (חלוניות קופצות) -->
+    
+    <!-- אודות המגמה -->
+    <div id="aboutModal" class="modal fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeModal('aboutModal')"></div>
+        <div class="modal-content bg-white w-full max-w-2xl rounded-2xl shadow-2xl relative z-10 overflow-hidden">
+            <div class="bg-primary p-6 text-white flex justify-between items-center">
+                <h3 class="text-2xl font-heading font-bold">אודות המגמה</h3>
+                <button onclick="closeModal('aboutModal')" class="hover:bg-white/20 rounded-full p-2 transition">✕</button>
+            </div>
+            <div class="p-8 text-slate-700 leading-relaxed space-y-4">
+                <p>מגמת מידע ונתונים (Data Analysis) בתיכון אמית כפר בתיה מכשירה את דור העתיד של האנליסטים.</p>
+                <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 mt-4">
+                    <h4 class="font-bold text-primary mb-2">🎓 הרכב הציון לבגרות:</h4>
+                    <ul class="list-disc list-inside space-y-1 text-sm">
+                        <li>30% - הערכה חלופית (פרויקט חקר כיתה י').</li>
+                        <li>70% - בחינה חיצונית ופרויקט גמר (י"א-י"ב).</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="bg-slate-50 p-4 text-center border-t border-slate-100">
+                <button onclick="closeModal('aboutModal')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-6 py-2 rounded-lg font-bold transition">סגור</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- סולמות מדידה (למתקדמים) -->
+    <div id="scalesModal" class="modal fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeModal('scalesModal')"></div>
+        <div class="modal-content bg-white w-full max-w-2xl rounded-2xl shadow-2xl relative z-10 overflow-hidden">
+            <div class="bg-green-600 p-6 text-white flex justify-between items-center">
+                <h3 class="text-2xl font-heading font-bold">סולמות מדידה (למתקדמים)</h3>
+                <button onclick="closeModal('scalesModal')" class="hover:bg-white/20 rounded-full p-2 transition">✕</button>
+            </div>
+            <div class="p-8 text-slate-700 leading-relaxed">
+                <p class="mb-4 text-sm">נתקלתם במושגים "שמי", "סדר", "רווח" או "מנה"? הנה הסבר פשוט:</p>
+                
+                <div class="overflow-x-auto border border-slate-200 rounded-lg mb-6">
+                    <table class="w-full text-sm text-right">
+                        <thead class="bg-slate-50 text-slate-900 border-b border-slate-200">
+                            <tr>
+                                <th class="p-3">דוגמה לערך</th>
+                                <th class="p-3">דוגמה למשתנה</th>
+                                <th class="p-3">מה זה אומר? (תכונות)</th>
+                                <th class="p-3">סוג הסולם</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100">
+                            <tr>
+                                <td class="p-3 font-bold">ירושלים</td>
+                                <td class="p-3">עיר</td>
+                                <td class="p-3">רק שם (זהות)</td>
+                                <td class="p-3 bg-blue-50 text-blue-800 font-bold">שמי (Nominal)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold">רב סרן</td>
+                                <td class="p-3">דרגות בצבא</td>
+                                <td class="p-3">יש סדר/חשיבות (זהות + סדר)</td>
+                                <td class="p-3 bg-yellow-50 text-yellow-800 font-bold">סדר (Ordinal)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold">28 מעלות</td>
+                                <td class="p-3">טמפרטורה</td>
+                                <td class="p-3">יש משמעות להפרש (זהות + סדר + הפרשים)</td>
+                                <td class="p-3 bg-orange-50 text-orange-800 font-bold">רווח (Interval)</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-bold">8</td>
+                                <td class="p-3">משתתפים בניסוי</td>
+                                <td class="p-3">יש משמעות ל-0 מוחלט (אפשר לכפול ולחלק)</td>
+                                <td class="p-3 bg-green-50 text-green-800 font-bold">מנה (Ratio)</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- סיכום שיטת הסולם -->
+                <div class="bg-blue-50 p-4 rounded-lg border border-blue-100 mb-6 text-sm">
+                    <h4 class="font-bold text-blue-800 mb-2">סיכום: שיטת הסולם 🪜</h4>
+                    <p class="mb-2">ניתן לראות את הסולמות כמו שלבים בסולם - בכל שלב מתקיימת התכונה של השלב הקודם, ונוספת תכונה חדשה:</p>
+                    <ul class="list-disc list-inside space-y-1">
+                        <li><strong>זהות:</strong> היכולת להבדיל בין ערך לערך (קיים בכולם).</li>
+                        <li><strong>סדר:</strong> היכולת לדרג מה גבוה/נמוך יותר.</li>
+                        <li><strong>הפרש:</strong> המשמעות למרווח בין המספרים.</li>
+                        <li><strong>יחס:</strong> קיום של אפס מוחלט (פי כמה).</li>
+                    </ul>
+                </div>
+
+                <!-- סיווג משתנים -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 text-sm">
+                    <div class="bg-purple-50 p-3 rounded border border-purple-100">
+                        <span class="font-bold text-purple-800 block">משתנה קטגורי (איכותני)</span>
+                        מתאים לסולמות: <span class="font-bold">שמי, סדר</span>.
+                    </div>
+                    <div class="bg-teal-50 p-3 rounded border border-teal-100">
+                        <span class="font-bold text-teal-800 block">משתנה כמותי</span>
+                        מתאים לסולמות: <span class="font-bold">סדר, רווח, מנה</span>.
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <a href="https://docs.google.com/presentation/d/1qxXPkFroaxJiN3iXZU9_LTdzr-VDghnq/edit?usp=sharing&ouid=118299283458609907764&rtpof=true&sd=true" target="_blank" class="text-primary hover:underline font-bold">
+                        למצגת המלאה והסברים נוספים לחצו כאן
+                    </a>
+                </div>
+            </div>
+            <div class="bg-slate-50 p-4 text-center border-t border-slate-100">
+                <button onclick="closeModal('scalesModal')" class="bg-slate-200 hover:bg-slate-300 text-slate-700 px-6 py-2 rounded-lg font-bold transition">הבנתי, תודה</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- צור קשר -->
+    <div id="contactModal" class="modal fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" onclick="closeModal('contactModal')"></div>
+        <div class="modal-content bg-white w-full max-w-md rounded-2xl shadow-2xl relative z-10 overflow-hidden">
+            <div class="bg-secondary p-6 text-white flex justify-between items-center">
+                <h3 class="text-2xl font-heading font-bold">צור קשר 💬</h3>
+                <button onclick="closeModal('contactModal')" class="hover:bg-white/20 rounded-full p-2 transition">✕</button>
+            </div>
+            <div class="p-8 text-center space-y-6">
+                <p class="text-slate-600">נתקעתם? יש לכם שאלה על הפרויקט? <br> אל תהססו לפנות!</p>
+                
+                <a href="https://wa.me/972542244806?text=היי יעל, אני צריך עזרה בפרויקט Data" target="_blank" class="block w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold py-3 rounded-xl transition flex items-center justify-center gap-3 shadow-lg">
+                    <svg class="w-6 h-6 fill-current" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/></svg>
+                    שלח הודעה בוואטסאפ (054-2244806)
+                </a>
+                
+                <a href="mailto:yael.ntt@gmail.com" class="block w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-3 rounded-xl transition">
+                    📧 שלח אימייל
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- סקריפטים -->
+    <script>
+        // Modal Logic
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === "Escape") {
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = 'auto';
+                });
+            }
+        });
+
+        // Copy Prompt
+        function copyPrompt() {
+            const text = document.getElementById('prompt-text').innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                const msg = document.getElementById('copy-msg');
+                msg.classList.remove('opacity-0');
+                setTimeout(() => msg.classList.add('opacity-0'), 3000);
+            });
+        }
+
+        // Copy Text
+        function copyToClipboard(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text).then(() => {
+                alert('הטקסט הועתק! עכשיו הדביקו במסמך Word.');
+            });
+        }
+
+        // Checklist Logic
+        const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        
+        function updateProgress() {
+            const total = checkboxes.length;
+            const checked = document.querySelectorAll('input[type="checkbox"]:checked').length;
+            const percent = Math.round((checked / total) * 100);
+            progressBar.style.width = percent + '%';
+            progressText.innerText = percent + '%';
+            localStorage.setItem('projectChecklist', JSON.stringify(Array.from(checkboxes).map(c => c.checked)));
+        }
+
+        function loadProgress() {
+            const saved = JSON.parse(localStorage.getItem('projectChecklist'));
+            if (saved) { checkboxes.forEach((box, i) => { if (box) box.checked = saved[i]; }); updateProgress(); }
+        }
+
+        function resetChecklist() {
+            if(confirm('לאפס?')) { localStorage.removeItem('projectChecklist'); checkboxes.forEach(box => box.checked = false); updateProgress(); }
+        }
+
+        checkboxes.forEach(box => box.addEventListener('change', updateProgress));
+        loadProgress();
+    </script>
+</body>
+</html>
